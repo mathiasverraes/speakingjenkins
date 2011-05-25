@@ -19,6 +19,9 @@ define('VOICE', 'Vicki'); // http://www.gabrielserafini.com/blog/2008/08/19/mac-
 $url = ''; $username = ''; $password = '';
 $options = getopt('', array('url:', 'username::', 'password::'));
 extract($options);
+if(empty($url)) {
+	die('Please pass the URL to your Jenkins job'.PHP_EOL);
+}
 
 // authentication
 $context = array();
@@ -41,7 +44,7 @@ while(true)
 	if($current != $last)
 	{
 		$build = json_decode(file_get_contents($last.'api/json', null, $context));
-		echo "{$build->fullDisplayName} {$build->result} {$build->id}".PHP_EOL;
+		echo sprintf("%s %s %s", $build->fullDisplayName, $build->result, $build->id).PHP_EOL;
 		$current = $last;
 		if($build->result !== 'SUCCESS') {
 			speak($job, $build);
@@ -52,10 +55,10 @@ while(true)
 
 function speak($job, $build)
 {
-	exec("say -v '.VOICE.' job, {$job->displayName}, number {$build->number}, {$build->result},");
+	exec(sprintf("say -v %s job, %s, number %s, %s,", VOICE, $job->displayName, $build->number, $build->result));
 	foreach($build->culprits as $culprit)
 	{
 		$fullName = preg_replace('/<(.*)>/', '', $culprit->fullName); // remove email
-		exec("say -v '.VOICE.' Partner in crime, $fullName,");
+		exec(sprintf("say -v %s culprit, %s,", VOICE, $fullname));
 	}
 }

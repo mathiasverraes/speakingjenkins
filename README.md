@@ -27,3 +27,5 @@ Todo
 * windows support
 * multiple job support
 * make interval configurable
+
+... send in those pull requests :-)
