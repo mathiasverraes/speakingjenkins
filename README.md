@@ -11,11 +11,13 @@ Usage
 
 Run speakingjenkins.php from the command line.
 
+```
 Required:
 	--url=http://YOURJENKINS/job/YOURJOB/
 Optional:
 	--username=NAME
 	--password=PW
+```
 
 To run in background, add "> /dev/null &"
 
