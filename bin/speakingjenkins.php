@@ -1,3 +1,4 @@
+use SpeakingJenkins\TTS\OSXSpeaker;
 #!/usr/bin/php
 
 Info: http://github.com/mathiasverraes/speakingjenkins/
@@ -11,9 +12,12 @@ Optional:
 To run in background, add "> /dev/null &"
 
 <?php
+require_once __DIR__.'/../lib/SpeakingJenkins/Speaker/Speaker.php';
+require_once __DIR__.'/../lib/SpeakingJenkins/Speaker/OSXSpeaker.php';
+use SpeakingJenkins\Speaker\OSXSpeaker;
+
 // Configuration
 define('INTERVAL', 60); // in seconds
-define('VOICE', 'Vicki'); // http://www.gabrielserafini.com/blog/2008/08/19/mac-os-x-voices-for-using-with-the-say-command/
 
 // command line options
 $url = ''; $username = ''; $password = '';
@@ -55,10 +59,11 @@ while(true)
 
 function speak($job, $build)
 {
-	exec(sprintf("say -v %s job, %s, number %s, %s,", VOICE, $job->displayName, $build->number, $build->result));
+	$speaker = new OSXSpeaker;
+	$speaker->speak(sprintf("job, %s, number %s, %s,", $job->displayName, $build->number, $build->result));
 	foreach($build->culprits as $culprit)
 	{
 		$fullName = preg_replace('/<(.*)>/', '', $culprit->fullName); // remove email
-		exec(sprintf("say -v %s culprit, %s,", VOICE, $fullname));
+		$speaker->speak(sprintf("culprit, %s,", $fullName));
 	}
 }
