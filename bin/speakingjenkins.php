@@ -1,4 +1,3 @@
-use SpeakingJenkins\TTS\OSXSpeaker;
 #!/usr/bin/php
 
 Info: http://github.com/mathiasverraes/speakingjenkins/
@@ -12,12 +11,14 @@ Optional:
 To run in background, add "> /dev/null &"
 
 <?php
-require_once __DIR__.'/../lib/SpeakingJenkins/Speaker/Speaker.php';
-require_once __DIR__.'/../lib/SpeakingJenkins/Speaker/OSXSpeaker.php';
-use SpeakingJenkins\Speaker\OSXSpeaker;
+use SpeakingJenkins\Speaker\Speaker;
 
 // Configuration
 define('INTERVAL', 60); // in seconds
+
+require_once __DIR__.'/../lib/SpeakingJenkins/Speaker/'.PHP_OS.'Speaker.php';
+$speakerClass = '\SpeakingJenkins\Speaker\\'.PHP_OS.'Speaker';
+$speaker = new $speakerClass;
 
 // command line options
 $url = ''; $username = ''; $password = '';
@@ -51,15 +52,14 @@ while(true)
 		echo sprintf("%s %s %s", $build->fullDisplayName, $build->result, $build->id).PHP_EOL;
 		$current = $last;
 		if($build->result !== 'SUCCESS') {
-			speak($job, $build);
+			speak($speaker, $job, $build);
 		}
 	}
 	sleep(INTERVAL);
 }
 
-function speak($job, $build)
+function speak(Speaker $speaker, $job, $build)
 {
-	$speaker = new OSXSpeaker;
 	$speaker->speak(sprintf("job, %s, number %s, %s,", $job->displayName, $build->number, $build->result));
 	foreach($build->culprits as $culprit)
 	{
@@ -67,3 +67,4 @@ function speak($job, $build)
 		$speaker->speak(sprintf("culprit, %s,", $fullName));
 	}
 }
+

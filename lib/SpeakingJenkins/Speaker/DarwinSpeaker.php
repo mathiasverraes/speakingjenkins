@@ -1,7 +1,9 @@
 <?php
 namespace SpeakingJenkins\Speaker;
 
-class OSXSpeaker implements Speaker
+require_once __DIR__.'/Speaker.php';
+
+class DarwinSpeaker implements Speaker
 {
 	/**
 	 * http://www.gabrielserafini.com/blog/2008/08/19/mac-os-x-voices-for-using-with-the-say-command/
